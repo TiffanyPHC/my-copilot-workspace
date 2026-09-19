@@ -23,6 +23,7 @@ const todoForm = document.querySelector('#todo-form');
 const todoInput = document.querySelector('#todo-input');
 const todoList = document.querySelector('#todo-list');
 const todoSummary = document.querySelector('#todo-summary');
+const clearCompletedButton = document.querySelector('#clear-completed');
 const themeToggle = document.querySelector('#theme-toggle');
 const themeIcon = document.querySelector('.theme-icon');
 const themeText = document.querySelector('.theme-text');
@@ -58,6 +59,7 @@ const getFilteredTodos = () => {
 // 重新渲染待辦清單與統計資訊
 const renderTodos = () => {
   const unfinishedCount = todos.filter((todo) => !todo.completed).length;
+  const completedCount = todos.filter((todo) => todo.completed).length;
   const visibleTodos = getFilteredTodos();
 
   // 若篩選後清單為空，顯示相對應的提示訊息，並說明項目只是被篩選條件排除
@@ -104,6 +106,12 @@ const renderTodos = () => {
 
   // 底部的未完成數字不受篩選影響，永遠顯示整體數量
   todoSummary.textContent = `未完成: ${unfinishedCount} 項`;
+
+  // 只有當存在已完成項目時，才顯示清除按鈕
+  const hasCompletedTodos = completedCount > 0;
+  clearCompletedButton.hidden = !hasCompletedTodos;
+  clearCompletedButton.disabled = !hasCompletedTodos;
+  clearCompletedButton.textContent = `清除已完成 (${completedCount})`;
 };
 
 // 新增待辦事項
@@ -147,6 +155,25 @@ const toggleTodo = (id) => {
 // 刪除待辦事項
 const deleteTodo = (id) => {
   todos = todos.filter((todo) => todo.id !== id);
+  saveTodos(todos);
+  renderTodos();
+};
+
+// 刪除所有已完成的待辦事項
+const clearCompletedTodos = () => {
+  const completedCount = todos.filter((todo) => todo.completed).length;
+
+  if (completedCount === 0) {
+    return;
+  }
+
+  const confirmed = window.confirm(`確定要清除 ${completedCount} 個已完成事項嗎？`);
+
+  if (!confirmed) {
+    return;
+  }
+
+  todos = todos.filter((todo) => !todo.completed);
   saveTodos(todos);
   renderTodos();
 };
@@ -221,6 +248,9 @@ const toggleTheme = () => {
     }
   }
 });
+
+// 清除已完成項目事件
+clearCompletedButton.addEventListener('click', clearCompletedTodos);
 
 // 深色模式切換按鈕事件
  themeToggle.addEventListener('click', toggleTheme);
