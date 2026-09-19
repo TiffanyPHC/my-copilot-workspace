@@ -60,17 +60,27 @@ const renderTodos = () => {
   const unfinishedCount = todos.filter((todo) => !todo.completed).length;
   const visibleTodos = getFilteredTodos();
 
-  // 若篩選後清單為空，顯示相對應的提示訊息
+  // 若篩選後清單為空，顯示相對應的提示訊息，並說明項目只是被篩選條件排除
   if (visibleTodos.length === 0) {
     let emptyMessage = '還沒有任何待辦事項,新增一個吧!';
+    let emptyHint = '';
 
     if (currentFilter === 'active') {
       emptyMessage = '目前沒有未完成的待辦事項';
+      emptyHint = '這些項目只是被篩選條件排除，並未被刪除。';
     } else if (currentFilter === 'completed') {
       emptyMessage = '目前沒有已完成的待辦事項';
+      emptyHint = '這些項目只是被篩選條件排除，並未被刪除。';
     }
 
-    todoList.innerHTML = `<li class="empty-state">${emptyMessage}</li>`;
+    todoList.innerHTML = `
+      <li class="empty-state">
+        <div class="empty-state-content">
+          <span>${emptyMessage}</span>
+          ${emptyHint ? `<small class="empty-hint">${emptyHint}</small>` : ''}
+        </div>
+      </li>
+    `;
   } else {
     todoList.innerHTML = visibleTodos
       .map(
