@@ -211,6 +211,17 @@ input {
   padding: 18px 12px;
 }
 
+.empty-state-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.empty-hint {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
 .todo-item {
   display: flex;
   align-items: center;
